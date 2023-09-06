@@ -1,5 +1,6 @@
 package com.muhammet.Java8SpringTest.mockito;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import static org.mockito.Mockito.*;
 
@@ -58,4 +59,61 @@ public class MockTestIslemleri {
         verify(mockList).add("Muhammet");
         verify(mockList).clear();
     }
+
+    @Test
+    void mockAndJUnit(){
+        List<String> mockList = mock(ArrayList.class);
+
+        when(mockList.get(0)).thenReturn("Java");
+        Assertions.assertEquals("Java", mockList.get(0));
+    }
+
+    @Test
+    void mockCagirimAdetleri(){
+        List<String> mockList = mock(ArrayList.class);
+
+        mockList.add("Java");
+
+        mockList.add("C#");
+        mockList.add("C#");
+
+        mockList.add("Python");
+        mockList.add("Python");
+        mockList.add("Python");
+        /**
+         * mockList nesnesinin add methodu "Java" parametresi ile çağrıldı mı?
+         */
+        verify(mockList).add("Java");
+        /**
+         * mockList nesnesinin add methodu "C#" parametresi ile 2 kez çağrıldı mı?
+         */
+        verify(mockList,times(2)).add("C#");
+        /**
+         * mockList nesnesinin add methodu "C#" parametresi ile en az 1 kez çağrıldı mı?
+         */
+        verify(mockList,atLeastOnce()).add("C#");
+        verify(mockList,atLeast(3)).add("Python");
+        /**
+         * mockList nesnesinin add methodu "Java" parametresi ile en fazla 1 kez çağrıldı mı?
+         */
+        verify(mockList,atMostOnce()).add("Java");
+        //verify(mockList,atMostOnce()).add("C#");
+        verify(mockList,atMostOnce()).add("Böyle bir değer yok");
+
+        verify(mockList,never()).add("Böyle bir değer yok");
+
+    }
+
+    @Test
+    void istisnaDondurenMock(){
+        List<String> mockList = mock(ArrayList.class);
+        when(mockList.add(anyString())).thenReturn(true);
+        when(mockList.get(anyInt())).thenReturn("Java");
+        doThrow(new RuntimeException("Olmadı bunu yapmayacaktın")).when(mockList).clear();
+        boolean eklendiMi = mockList.add("Java");
+        System.out.println("Eklendi mi? : "+ eklendiMi);
+        System.out.println("Get 9999.....: "+ mockList.get(9999));
+        mockList.clear();
+    }
+
 }
